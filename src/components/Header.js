@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import 'styled-components/macro';
 
-import BaseContainer from './Container';
+import Container from './Container';
 import Phone from './Phone';
 import Logo from '../assets/images/logo.png';
 import UserLink from './UserLink';
@@ -11,11 +11,6 @@ import UserLink from './UserLink';
 const Wrapper = styled.header`
   background-color: #ffffff;
   min-height: ${rem(82)};
-  display: flex;
-  align-items: center;
-`;
-
-const Container = styled(BaseContainer)`
   display: flex;
   align-items: center;
 `;
@@ -45,7 +40,12 @@ const Separator = styled.div`
 export default function Header() {
   return (
     <Wrapper>
-      <Container>
+      <Container
+        css={`
+          display: flex;
+          align-items: center;
+        `}
+      >
         <HeaderLeft>
           <LogoWrapper>
             <img src={Logo} alt="Instacarro logo" />
