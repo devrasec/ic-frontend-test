@@ -8,6 +8,17 @@ import * as serviceWorker from './serviceWorker';
 const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Open Sans', Helvetica, sans-serif;
+    background-color: #ebebeb;
+    color: #959595;
+  }
+
+  img {
+    width: 100%;
+    display: block;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 `;
 
