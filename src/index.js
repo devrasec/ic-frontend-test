@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: 'Open Sans', Helvetica, sans-serif;
     background-color: #ebebeb;
-    color: #959595;
+    color: #323232;
   }
 
   img {
@@ -19,6 +19,11 @@ const GlobalStyle = createGlobalStyle`
 
   * {
     box-sizing: border-box;
+  }
+
+  ul, dl, dt, dd {
+    padding: 0;
+    margin: 0;
   }
 `;
 
