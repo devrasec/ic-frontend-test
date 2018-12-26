@@ -6,7 +6,8 @@ import { rem } from 'polished';
 import {
   auctionsRequest,
   auctionsSelector,
-  isFetchingAuctionsSelector
+  isFetchingAuctionsSelector,
+  currentBidsSelector
 } from '../redux/modules/auctions';
 import CarAuctionItem from './CarAuctionItem';
 
@@ -41,13 +42,17 @@ class CarAuctions extends Component {
   }
 
   render() {
-    const { auctions } = this.props;
+    const { auctions, bids } = this.props;
+    console.log(bids);
 
     return (
       <AuctionList>
         {auctions.map(auction => (
           <AuctionItem key={auction.id}>
-            <CarAuctionItem auction={auction} />
+            <CarAuctionItem
+              auction={auction}
+              currentBidAmount={bids[auction.id].amount}
+            />
           </AuctionItem>
         ))}
       </AuctionList>
@@ -58,7 +63,8 @@ class CarAuctions extends Component {
 function mapStateToProps(state) {
   return {
     isFetching: isFetchingAuctionsSelector(state),
-    auctions: auctionsSelector(state)
+    auctions: auctionsSelector(state),
+    bids: currentBidsSelector(state)
   };
 }
 

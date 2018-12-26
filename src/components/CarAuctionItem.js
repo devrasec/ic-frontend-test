@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { connect } from 'react-redux';
 import formatDate from 'date-fns/format';
 import 'styled-components/macro';
 
+import { makeBid } from '../redux/modules/auctions';
 import numberFormat, { currencyFormat } from '../utils/numberFormat';
 
 import Button from './Button';
@@ -78,7 +80,7 @@ const CarDescription = styled.h4`
   padding-right: ${rem(20)};
 `;
 
-export default class CarAuctionItem extends Component {
+class CarAuctionItem extends Component {
   state = {
     msToFinish: this.props.auction.remainingTime
   };
@@ -109,8 +111,17 @@ export default class CarAuctionItem extends Component {
     return `${make} ${model} ${version} ${year}`;
   };
 
+  placeNewBid = () => {
+    const { makeBid, auction, currentBidAmount } = this.props;
+    makeBid({
+      auctionId: auction.id,
+      amount: parseInt(currentBidAmount) + 250,
+      createdAt: new Date().toISOString()
+    });
+  };
+
   render() {
-    const { auction } = this.props;
+    const { auction, currentBidAmount } = this.props;
 
     return (
       <Card>
@@ -131,7 +142,7 @@ export default class CarAuctionItem extends Component {
             <AuctionAttr>
               <AuctionAttrLabel>ULTIMA OFERTA</AuctionAttrLabel>
               <AuctionAttrValue color="#3eb871">
-                {currencyFormat(auction.currentBidAmount)}
+                {currencyFormat(currentBidAmount)}
               </AuctionAttrValue>
             </AuctionAttr>
           </DetailsRow>
@@ -158,10 +169,17 @@ export default class CarAuctionItem extends Component {
               margin: ${rem(10)};
             `}
           >
-            <Button>FAZER OFERTA</Button>
+            <Button type="button" onClick={this.placeNewBid}>
+              FAZER OFERTA
+            </Button>
           </div>
         </CarAuctionDetails>
       </Card>
     );
   }
 }
+
+export default connect(
+  null,
+  { makeBid }
+)(CarAuctionItem);

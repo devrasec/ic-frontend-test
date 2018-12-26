@@ -1,20 +1,33 @@
 import { createSelector } from 'reselect';
+import omit from 'lodash/omit';
 import fetchAuctions from '../../services/api/fetchAuctions';
 
 // Actions.
 const AUCTIONS_REQUEST = 'auctions/AUCTIONS_REQUEST';
 const AUCTIONS_REQUEST_SUCCESS = 'auctions/AUCTIONS_REQUEST_SUCCESS';
 const AUCTIONS_REQUEST_FAILURE = 'auctions/AUCTIONS_REQUEST_FAILURE';
+const MAKE_BID = 'auctions/MAKE_BID';
 
 // Action creators.
-export const auctionsRequestSuccess = auctions => ({
+export const auctionsRequestSuccess = (auctions, bids) => ({
   type: AUCTIONS_REQUEST_SUCCESS,
-  payload: auctions
+  payload: { auctions, bids }
 });
 
 export const auctionsRequestFailure = error => ({
   type: AUCTIONS_REQUEST_FAILURE,
   error
+});
+
+export const makeBid = ({
+  auctionId,
+  amount,
+  createdAt,
+  dealership = 'Instacarro',
+  channel = 'Web'
+}) => ({
+  type: MAKE_BID,
+  payload: { auctionId, amount, createdAt, dealership, channel }
 });
 
 // Thunks.
@@ -24,7 +37,18 @@ export const auctionsRequest = () => {
 
     try {
       const response = await fetchAuctions();
-      dispatch(auctionsRequestSuccess(response.data));
+
+      const { auctions, bids } = response.data.reduce(
+        (acc, current) => {
+          acc.auctions.push(omit(current, 'bids'));
+          acc.bids[current.id] = current.bids;
+
+          return acc;
+        },
+        { auctions: [], bids: {} }
+      );
+
+      dispatch(auctionsRequestSuccess(auctions, bids));
     } catch (error) {
       console.log(error);
       dispatch(auctionsRequestFailure(error));
@@ -34,26 +58,13 @@ export const auctionsRequest = () => {
 
 // Selectors.
 export const auctionsRawSelector = state => state.auctions;
+export const bidsRawSelector = state => state.bids;
 export const isFetchingAuctionsSelector = state => state.isFetching;
 
 export const auctionsSelector = createSelector(
   auctionsRawSelector,
   auctions => {
-    const newAuctions = auctions.map(auction => {
-      if (!auction.bids || auction.bids.length === 0) {
-        return { ...auction, currentBidAmount: 0 };
-      }
-
-      const bids = auction.bids;
-      const orderedBids = bids.sort((a, b) => {
-        const dateA = new Date(a.createdAt);
-        const dateB = new Date(b.createdAt);
-
-        return dateB - dateA;
-      });
-
-      return { ...auction, currentBidAmount: orderedBids[0].amount };
-    });
+    const newAuctions = auctions;
 
     newAuctions.sort((a, b) => a.remainingTime - b.remainingTime);
 
@@ -61,10 +72,33 @@ export const auctionsSelector = createSelector(
   }
 );
 
+export const currentBidsSelector = createSelector(
+  bidsRawSelector,
+  bidsByAuctionId => {
+    const currentBids = Object.keys(bidsByAuctionId).reduce((acc, current) => {
+      const bids = bidsByAuctionId[current];
+
+      bids.sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+
+        return dateB - dateA;
+      });
+
+      acc[current] = bids.length ? { ...bids[0] } : { amount: 0 };
+
+      return acc;
+    }, {});
+
+    return currentBids;
+  }
+);
+
 // Reducer.
 const initialState = {
   isFetching: false,
-  auctions: []
+  auctions: [],
+  bids: {}
 };
 
 export default function reducer(state = initialState, action) {
@@ -73,10 +107,25 @@ export default function reducer(state = initialState, action) {
       return { ...state, isFetching: true };
 
     case AUCTIONS_REQUEST_SUCCESS:
-      return { isFetching: false, auctions: action.payload };
+      return { isFetching: false, ...action.payload };
 
     case AUCTIONS_REQUEST_FAILURE:
       return { ...state, isFetching: false };
+
+    case MAKE_BID:
+      return {
+        ...state,
+        bids: {
+          ...state.bids,
+          [action.payload.auctionId]: [
+            ...state.bids[action.payload.auctionId],
+            {
+              ...omit(action.payload, 'auctionId'),
+              amount: action.payload.amount
+            }
+          ]
+        }
+      };
 
     default:
       return state;
