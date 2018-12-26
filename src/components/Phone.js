@@ -3,11 +3,17 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import 'styled-components/macro';
 
+import media from '../utils/styledMQ';
 import PhoneIcon from './icons/PhoneIcon';
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  font-size: ${rem(14)};
+
+  ${media.tablet`
+    font-size: ${rem(16)};
+  `};
 `;
 
 const IconContainer = styled.div`
