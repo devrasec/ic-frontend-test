@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import formatDate from 'date-fns/format';
 import 'styled-components/macro';
+
+import numberFormat, { currencyFormat } from '../utils/numberFormat';
 
 import Button from './Button';
 
@@ -9,19 +12,37 @@ const Card = styled.div`
   background-color: #ffffff;
   box-shadow: 0 1px 1px 1px #cccccc;
   border-radius: 5px;
+  height: 100%;
+`;
+
+const CarPhoto = styled.div`
+  width: 100%;
+  margin-bottom: ${rem(10)};
+
+  img {
+    display: block;
+    width: 100%;
+    border-top-left-radius: ${rem(5)};
+    border-top-right-radius: ${rem(5)};
+  }
 `;
 
 const CarAuctionDetails = styled.div`
-  padding: ${rem(10)};
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const DetailsRow = styled.div`
   display: flex;
   align-items: center;
+  flex: 1;
   justify-content: space-evenly;
   border-bottom: 2px solid #e4e4e4;
   padding-top: ${rem(10)};
   padding-bottom: ${rem(10)};
+  margin-left: ${rem(10)};
+  margin-right: ${rem(10)};
 `;
 
 const AuctionAttr = styled.dl`
@@ -49,50 +70,74 @@ const Separator = styled.div`
   margin-right: ${rem(10)};
 `;
 
-export default function CarAuctionItem() {
-  return (
-    <Card>
-      <CarAuctionDetails>
-        <DetailsRow>
-          <AuctionAttr>
-            <AuctionAttrLabel>TEMPO RESTANTE</AuctionAttrLabel>
-            <AuctionAttrValue color="#ff6d4a">15:55:55</AuctionAttrValue>
-          </AuctionAttr>
+const CarDescription = styled.h4`
+  margin: 0;
+  text-align: center;
+  font-size: ${rem(16)};
+  padding-left: ${rem(20)};
+  padding-right: ${rem(20)};
+`;
 
-          <Separator />
+export default class CarAuctionItem extends Component {
+  getCarDescription = () => {
+    const {
+      auction: { make, model, year, version }
+    } = this.props;
 
-          <AuctionAttr>
-            <AuctionAttrLabel>ULTIMA OFERTA</AuctionAttrLabel>
-            <AuctionAttrValue color="#3eb871">R$ 29.250</AuctionAttrValue>
-          </AuctionAttr>
-        </DetailsRow>
+    return `${make} ${model} ${version} ${year}`;
+  };
 
-        <DetailsRow>
-          <h4
+  render() {
+    const { auction } = this.props;
+
+    return (
+      <Card>
+        <CarAuctionDetails>
+          <CarPhoto>
+            <img src={auction.imageUrl} alt="car" />
+          </CarPhoto>
+          <DetailsRow>
+            <AuctionAttr>
+              <AuctionAttrLabel>TEMPO RESTANTE</AuctionAttrLabel>
+              <AuctionAttrValue color="#ff6d4a">
+                {formatDate(auction.remainingTime, 'HH:mm:ss')}
+              </AuctionAttrValue>
+            </AuctionAttr>
+
+            <Separator />
+
+            <AuctionAttr>
+              <AuctionAttrLabel>ULTIMA OFERTA</AuctionAttrLabel>
+              <AuctionAttrValue color="#3eb871">R$ 29.250</AuctionAttrValue>
+            </AuctionAttr>
+          </DetailsRow>
+
+          <DetailsRow>
+            <CarDescription>{this.getCarDescription()}</CarDescription>
+          </DetailsRow>
+
+          <DetailsRow
             css={`
-              margin: 0;
-              text-align: center;
-              font-size: ${rem(16)};
+              margin-bottom: ${rem(15)};
             `}
           >
-            HONDA FIT 1.4 LXL 8V GASOLINA 4P AUTOMATICO 2007
-          </h4>
-        </DetailsRow>
+            <AuctionAttr as="div">{auction.year}</AuctionAttr>
 
-        <DetailsRow
-          css={`
-            margin-bottom: ${rem(15)};
-          `}
-        >
-          <AuctionAttr as="div">2007</AuctionAttr>
+            <Separator />
 
-          <Separator />
+            <AuctionAttr as="div">{numberFormat(auction.km)} KM</AuctionAttr>
+          </DetailsRow>
 
-          <AuctionAttr as="div">92.610 KM</AuctionAttr>
-        </DetailsRow>
-
-        <Button>FAZER OFERTA</Button>
-      </CarAuctionDetails>
-    </Card>
-  );
+          <div
+            css={`
+              flex-shrink: 1;
+              margin: ${rem(10)};
+            `}
+          >
+            <Button>FAZER OFERTA</Button>
+          </div>
+        </CarAuctionDetails>
+      </Card>
+    );
+  }
 }

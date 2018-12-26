@@ -26,11 +26,15 @@ class CarAuctions extends Component {
   }
 
   render() {
+    const { auctions } = this.props;
+
     return (
       <AuctionList>
-        <AuctionItem>
-          <CarAuctionItem />
-        </AuctionItem>
+        {auctions.map(auction => (
+          <AuctionItem key={auction.id}>
+            <CarAuctionItem auction={auction} />
+          </AuctionItem>
+        ))}
       </AuctionList>
     );
   }
