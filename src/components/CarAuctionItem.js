@@ -108,7 +108,9 @@ export default class CarAuctionItem extends Component {
 
             <AuctionAttr>
               <AuctionAttrLabel>ULTIMA OFERTA</AuctionAttrLabel>
-              <AuctionAttrValue color="#3eb871">R$ 29.250</AuctionAttrValue>
+              <AuctionAttrValue color="#3eb871">
+                {currencyFormat(auction.currentBidAmount)}
+              </AuctionAttrValue>
             </AuctionAttr>
           </DetailsRow>
 

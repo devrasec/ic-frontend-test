@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { rem } from 'polished';
 
-import { auctionsRequest } from '../redux/modules/auctions';
+import {
+  auctionsRequest,
+  auctionsSelector,
+  isFetchingAuctionsSelector
+} from '../redux/modules/auctions';
 import CarAuctionItem from './CarAuctionItem';
 
 const AuctionList = styled.ul`
@@ -42,8 +46,8 @@ class CarAuctions extends Component {
 
 function mapStateToProps(state) {
   return {
-    isFetching: state.isFetching,
-    auctions: state.auctions
+    isFetching: isFetchingAuctionsSelector(state),
+    auctions: auctionsSelector(state)
   };
 }
 
