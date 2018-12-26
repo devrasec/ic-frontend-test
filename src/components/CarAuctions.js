@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { rem } from 'polished';
 
+import { auctionsRequest } from '../redux/modules/auctions';
 import CarAuctionItem from './CarAuctionItem';
 
 const AuctionList = styled.ul`
@@ -18,12 +20,30 @@ const AuctionItem = styled.li`
   padding-right: ${rem(10)};
 `;
 
-export default function CarAuctions() {
-  return (
-    <AuctionList>
-      <AuctionItem>
-        <CarAuctionItem />
-      </AuctionItem>
-    </AuctionList>
-  );
+class CarAuctions extends Component {
+  componentDidMount() {
+    this.props.fetchAuctions();
+  }
+
+  render() {
+    return (
+      <AuctionList>
+        <AuctionItem>
+          <CarAuctionItem />
+        </AuctionItem>
+      </AuctionList>
+    );
+  }
 }
+
+function mapStateToProps(state) {
+  return {
+    isFetching: state.isFetching,
+    auctions: state.auctions
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  { fetchAuctions: auctionsRequest }
+)(CarAuctions);
