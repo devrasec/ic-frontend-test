@@ -79,6 +79,28 @@ const CarDescription = styled.h4`
 `;
 
 export default class CarAuctionItem extends Component {
+  state = {
+    msToFinish: this.props.auction.remainingTime
+  };
+
+  intervalId: null;
+
+  componentDidMount() {
+    this.intervalId = setInterval(this.updateAuctionTimer, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
+  updateAuctionTimer = () => {
+    this.setState(prevState => ({
+      msToFinish: parseInt(prevState.msToFinish) - 1000
+    }));
+  };
+
+  getMilliseconds = () => this.state.msToFinish;
+
   getCarDescription = () => {
     const {
       auction: { make, model, year, version }
@@ -100,7 +122,7 @@ export default class CarAuctionItem extends Component {
             <AuctionAttr>
               <AuctionAttrLabel>TEMPO RESTANTE</AuctionAttrLabel>
               <AuctionAttrValue color="#ff6d4a">
-                {formatDate(auction.remainingTime, 'HH:mm:ss')}
+                {formatDate(this.getMilliseconds(), 'HH:mm:ss')}
               </AuctionAttrValue>
             </AuctionAttr>
 
