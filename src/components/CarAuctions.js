@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { rem } from 'polished';
+import media from '../utils/styledMQ';
 
 import {
   auctionsRequest,
@@ -25,15 +26,15 @@ const AuctionItem = styled.li`
   padding-left: ${rem(10)};
   padding-right: ${rem(10)};
 
-  @media (min-width: ${rem(768)}) {
+  ${media.tablet`
     flex-basis: 50%;
     max-width: 50%;
-  }
+  `};
 
-  @media (min-width: ${rem(992)}) {
+  ${media.desktop`
     flex-basis: 33.33%;
     max-width: 33.33%;
-  }
+  `};
 `;
 
 class CarAuctions extends Component {

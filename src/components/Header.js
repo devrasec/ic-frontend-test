@@ -19,6 +19,10 @@ const Wrapper = styled.header`
 
 const HeaderRight = styled.div`
   flex: 0 1 auto;
+
+  ${media.tablet`
+    min-width: ${rem(200)};
+  `};
 `;
 
 const HeaderLeft = styled.div`
