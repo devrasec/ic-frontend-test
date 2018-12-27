@@ -4,7 +4,7 @@ import 'styled-components/macro';
 
 import Header from './Header';
 import Container from './Container';
-import CarAuctions from './CarAuctions';
+import CarAuctions from '../containers/CarAuctions';
 
 export default function App() {
   return (

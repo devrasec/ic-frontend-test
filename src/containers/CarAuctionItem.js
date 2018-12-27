@@ -9,7 +9,7 @@ import 'styled-components/macro';
 import { makeBid } from '../redux/modules/auctions';
 import numberFormat, { currencyFormat } from '../utils/numberFormat';
 
-import Button from './Button';
+import Button from '../components/Button';
 
 const Card = styled.div`
   background-color: #ffffff;
