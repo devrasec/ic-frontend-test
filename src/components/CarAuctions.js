@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { rem } from 'polished';
+import PropTypes from 'prop-types';
 import media from '../utils/styledMQ';
 
 import {
@@ -10,7 +11,7 @@ import {
   isFetchingAuctionsSelector,
   currentBidsSelector
 } from '../redux/modules/auctions';
-import CarAuctionItem from './CarAuctionItem';
+import CarAuctionItem, { auctionPropTypes } from './CarAuctionItem';
 
 const AuctionList = styled.ul`
   list-style: none;
@@ -38,13 +39,19 @@ const AuctionItem = styled.li`
 `;
 
 class CarAuctions extends Component {
+  static propTypes = {
+    isFetching: PropTypes.bool,
+    auctions: PropTypes.arrayOf(auctionPropTypes),
+    bids: PropTypes.object,
+    fetchAuctions: PropTypes.func.isRequired
+  };
+
   componentDidMount() {
     this.props.fetchAuctions();
   }
 
   render() {
     const { auctions, bids } = this.props;
-    console.log(bids);
 
     return (
       <AuctionList>

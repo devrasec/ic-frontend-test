@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function UserIcon({ size = 40 }) {
   return (
@@ -17,3 +18,7 @@ export default function UserIcon({ size = 40 }) {
     </svg>
   );
 }
+
+UserIcon.propTypes = {
+  size: PropTypes.number
+};

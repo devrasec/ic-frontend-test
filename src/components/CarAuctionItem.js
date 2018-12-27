@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import { connect } from 'react-redux';
 import formatDate from 'date-fns/format';
+import PropTypes from 'prop-types';
 import 'styled-components/macro';
 
 import { makeBid } from '../redux/modules/auctions';
@@ -63,6 +64,10 @@ const AuctionAttrValue = styled.dd`
   font-weight: bold;
 `;
 
+AuctionAttrValue.propTypes = {
+  color: PropTypes.string.isRequired
+};
+
 const Separator = styled.div`
   height: ${rem(26)};
   max-width: 2px;
@@ -80,7 +85,24 @@ const CarDescription = styled.h4`
   padding-right: ${rem(20)};
 `;
 
+export const auctionPropTypes = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  remainingTime: PropTypes.number.isRequired,
+  make: PropTypes.string.isRequired,
+  model: PropTypes.string.isRequired,
+  year: PropTypes.number.isRequired,
+  version: PropTypes.string.isRequired,
+  km: PropTypes.number.isRequired,
+  imageUrl: PropTypes.string.isRequired
+});
+
 class CarAuctionItem extends Component {
+  static propTypes = {
+    auction: auctionPropTypes,
+    currentBidAmount: PropTypes.number.isRequired,
+    makeBid: PropTypes.func.isRequired
+  };
+
   state = {
     msToFinish: this.props.auction.remainingTime
   };

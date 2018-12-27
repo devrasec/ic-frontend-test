@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function PhoneIcon({ size = 40 }) {
   return (
@@ -24,3 +25,7 @@ export default function PhoneIcon({ size = 40 }) {
     </svg>
   );
 }
+
+PhoneIcon.propTypes = {
+  size: PropTypes.number
+};
